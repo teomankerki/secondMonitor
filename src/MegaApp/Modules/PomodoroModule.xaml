@@ -15,7 +15,11 @@
                 <TextBlock Text="Pomodoro" Style="{StaticResource ModuleTitle}" />
                 <TextBlock Text="{Binding CurrentPhase}" Foreground="#AAFFFFFF" />
                 <TextBlock Text="{Binding DisplayTime}" FontSize="36" FontWeight="SemiBold" Foreground="#F0F4FF" Margin="0 10 0 20" />
-                <ProgressBar Height="8" Value="{Binding Progress}" Maximum="1" Background="#22FFFFFF" Foreground="#FF7FD1AE" />
+                <ProgressBar Height="8"
+                             Value="{Binding Progress, Mode=OneWay}"
+                             Maximum="1"
+                             Background="#22FFFFFF"
+                             Foreground="#FF7FD1AE" />
             </StackPanel>
             <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 16 0 0">
                 <Button Content="Start/Pause" Click="OnToggle" Margin="0 0 8 0" Padding="8" />

@@ -1,21 +1,32 @@
-# Mega App – Second Monitor Sanctuary
+# Mega App — Second Monitor Sanctuary
 
-This repository contains a Windows-only .NET 8 WPF application designed to give your second monitor a calm, always-interesting dashboard. The experience mixes interactive toys, mindful utilities, and ambient visuals so you can take micro-breaks without diving into distracting websites.
+Mega App is a Windows‑only .NET 8 WPF dashboard designed to keep your second screen calm, playful, and informative. Build your own layout from the ground up, mix focus tools with ambient toys, and rearrange everything via drag‑and‑drop.
 
-## Feature Highlights
-- **Modular layout** – each feature is a standalone user control, so it is easy to rearrange or extend.
-- **Pomodoro companion** – a minimalist focus/break timer with progress feedback.
-- **Idle Garden** – low-effort clicker to level up a tranquil garden spirit.
-- **Affirmation carousel** – rotates curated quotes to keep morale high.
-- **Breathing rhythm** – animated orb that guides inhale/exhale pacing.
-- **System pulse** – lightweight clock and memory usage glance.
-- **Ambient drift** – looping particle field for subtle motion therapy.
+## Highlights
+- **Custom builder** – start with zero widgets, add preset categories (Productivity, Games, Vibes), and reorder anything with drag‑and‑drop.
+- **Productivity toolkit** – Pomodoro timer, system pulse, quick notes, and modular cards that can be resized or duplicated.
+- **Ambient vibes** – breathing guide, quote carousel, particle drift, and other passive companions.
+- **Playful breaks** – Idle Garden clicker, 2048, Mini Sudoku, Minesweeper, the new Endless Runner mini‑game, and a vector‑based Fidget Spinner with motion blur and palette swapping.
+- **Self‑contained** – runs completely offline with a muted theme designed for low distraction.
 
-Everything runs offline, uses a muted palette, and is optimized to stay out of your way while still keeping the second screen feeling alive.
+## Running the App
+1. Install the **.NET 8.0 Desktop SDK or runtime** on Windows.
+2. Clone this repo and open a terminal at the project root.
+3. Run:
+   ```powershell
+   dotnet run
+   ```
+   The WPF shell launches; press `Ctrl+C` or close the window to exit.
 
-## Getting Started
-1. Open `MegaApp.sln` with Visual Studio 2022 or later on Windows.
-2. Ensure the **.NET 8 Desktop Runtime** (or SDK) is installed.
-3. Set `MegaApp` as the startup project and press **F5** to build and run.
+### Developing in Visual Studio
+1. Open `MegaApp.sln` in Visual Studio 2022 or newer.
+2. Set `MegaApp` as the startup project.
+3. Press **F5** to build and debug.
 
-Feel free to remix modules, swap themes, or add your own widgets. The modular structure keeps future experimentation straightforward.
+## Customizing the Dashboard
+- Use the **Add Category** button to insert one of the preset sections. Each card can be renamed inline.
+- Within a category, pick any widget from the dropdown and click **Add Widget**. Modules can appear multiple times or in different categories.
+- Drag a widget tile to reorder it or move it into another category. Drag whole categories to rearrange the high‑level layout.
+- Many cards (spinner, runner, garden, etc.) expose in‑module controls to tweak colors, difficulty, or interactions.
+
+Feel free to fork, reskin modules, or drop in entirely new cards—the project structure keeps each widget isolated so experimentation stays easy.

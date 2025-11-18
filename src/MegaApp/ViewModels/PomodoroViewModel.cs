@@ -77,7 +77,7 @@ public sealed class PomodoroViewModel : ObservableObject, IDisposable
 
     public string CurrentPhase => IsBreak ? "Break" : "Focus";
 
-    public string DisplayTime => Remaining.ToString(Remaining.TotalHours >= 1 ? "hh\:mm\:ss" : "mm\:ss");
+    public string DisplayTime => Remaining.ToString(Remaining.TotalHours >= 1 ? @"hh\:mm\:ss" : @"mm\:ss");
 
     public double Progress
     {

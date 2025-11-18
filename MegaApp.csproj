@@ -5,6 +5,11 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <EnableDefaultCompileItems>true</EnableDefaultCompileItems>
+    <DefaultItemExcludes>$(DefaultItemExcludes);src\MegaApp\bin\**;src\MegaApp\obj\**</DefaultItemExcludes>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Page Remove="src\MegaApp\App.xaml" />
+    <ApplicationDefinition Include="src\MegaApp\App.xaml" />
+  </ItemGroup>
 </Project>
