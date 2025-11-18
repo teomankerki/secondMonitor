@@ -1,0 +1,18 @@
+<UserControl x:Class="MegaApp.Modules.IdleGardenModule"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200" d:DesignWidth="260">
+    <Border Style="{StaticResource ModuleCard}">
+        <StackPanel>
+            <TextBlock Text="Idle Garden" Style="{StaticResource ModuleTitle}" />
+            <ProgressBar Height="10" Value="{Binding Progress, Mode=OneWay}" Maximum="1" Background="#22FFFFFF" Foreground="#FF7FD1AE" />
+            <TextBlock Text="{Binding Level, StringFormat=Level {0}}" Margin="0 8 0 0" Foreground="#CCFFFFFF" />
+            <TextBlock Text="Tap to collect calm energy" Foreground="#88FFFFFF" FontSize="12" />
+            <Button Content="Grow" Command="{Binding TapCommand}" Margin="0 12 0 0" Padding="8"
+                    Background="#337FD1AE" BorderBrush="Transparent" Foreground="White" />
+        </StackPanel>
+    </Border>
+</UserControl>
