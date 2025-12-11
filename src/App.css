@@ -9,6 +9,30 @@
   color: var(--ink-strong);
 }
 
+.page-header {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-header h1 {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: var(--ink-subtle);
+}
+
+.logo-mark {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -74,6 +98,14 @@
 .hint {
   color: var(--ink-subtle);
   max-width: 420px;
+}
+
+.footer {
+  margin-top: 18px;
+  color: var(--ink-subtle);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 12px 0 24px;
 }
 
 @media (max-width: 900px) {

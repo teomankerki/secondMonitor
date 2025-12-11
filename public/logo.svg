@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Second Screen logo">
+  <defs>
+    <linearGradient id="monitorFrame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1729"/>
+      <stop offset="100%" stop-color="#0b1424"/>
+    </linearGradient>
+    <linearGradient id="monitorGlow" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#74ffd4" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#8bb5ff" stop-opacity="0.9"/>
+    </linearGradient>
+    <linearGradient id="monitorStand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c2638"/>
+      <stop offset="100%" stop-color="#0f1729"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="84" rx="12" fill="url(#monitorFrame)" stroke="#1f2b44" stroke-width="4"/>
+  <rect x="18" y="18" width="92" height="64" rx="8" fill="#0a101f" stroke="#223148" stroke-width="2"/>
+  <rect x="22" y="22" width="84" height="56" rx="6" fill="#0d1527"/>
+  <path d="M22 78h84c-4 6-13 10-24 12-16 3-32 2-48-1-6-1-10-3-12-5z" fill="#0f1729"/>
+  <path d="M28 72c0-14.5 11.7-26.5 26.5-26.5 6.5 0 12.4 2 17 6l8.5-9.4C73.4 36.9 64.7 34 54.5 34 33.9 34 17 50.4 17 70.7c0 16.4 11.9 28.8 27.3 30.7 10 1.2 19.6-2.3 26.8-8.9l-8-9.1c-4.2 3.5-9.3 5.5-15.3 5.5C36.9 88.9 28 81 28 72z" fill="url(#monitorGlow)"/>
+  <circle cx="96" cy="30" r="9" fill="#74ffd4" fill-opacity="0.9"/>
+  <circle cx="30" cy="28" r="5" fill="#8bb5ff" fill-opacity="0.8"/>
+  <rect x="50" y="92" width="28" height="8" rx="3" fill="#10192d" stroke="#223148" stroke-width="2"/>
+  <rect x="44" y="100" width="40" height="6" rx="3" fill="url(#monitorStand)" />
+  <rect x="38" y="106" width="52" height="8" rx="4" fill="url(#monitorStand)" stroke="#1f2b44" stroke-width="1.5"/>
+</svg>

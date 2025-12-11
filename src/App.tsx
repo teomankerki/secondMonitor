@@ -1,35 +1,12 @@
-import { Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import LayoutDesigner from './components/LayoutDesigner'
 import TimerWidget from './widgets/TimerWidget'
 import NotesWidget from './widgets/NotesWidget'
 import QuotesWidget from './widgets/QuotesWidget'
+import AmbientWidget from './widgets/AmbientWidget'
+import GameWidget from './widgets/GameWidget'
 import './App.css'
 
-function TopBar() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const isSettings = location.pathname === '/settings'
-
-  return (
-    <div className="topbar">
-      <button
-        type="button"
-        className="topbar-button"
-        onClick={() => navigate('/settings')}
-        aria-current={isSettings}
-      >
-        Settings
-      </button>
-      {isSettings && (
-        <Link to="/" className="topbar-link">
-          ← Back to widgets
-        </Link>
-      )}
-    </div>
-  )
-}
-
-function Home() {
+function App() {
   const renderWidget = (card: { kind: string }) => {
     switch (card.kind) {
       case 'timer':
@@ -38,6 +15,10 @@ function Home() {
         return <NotesWidget />
       case 'quotes':
         return <QuotesWidget />
+      case 'ambient':
+        return <AmbientWidget />
+      case 'game':
+        return <GameWidget />
       default:
         return (
           <>
@@ -50,54 +31,27 @@ function Home() {
 
   return (
     <div className="page">
+      <div className="page-header">
+        <img src="/logo.svg" alt="Second Screen logo" className="logo-mark" />
+        <div>
+          <h1>Second Screen Mega App</h1>
+          <p>A web app with all your needs for your second screen. Developed by and for iPad kids.</p>
+        </div>
+      </div>
       <div className="panel">
         <LayoutDesigner
           showControls={false}
           showPresetBar={false}
           showPreview={false}
           showWidthControls={false}
-          showDropZone={false}
+          showDropZone
           renderCardContent={renderWidget}
         />
       </div>
-    </div>
-  )
-}
-
-function Settings() {
-  return (
-    <div className="page">
-      <div className="panel">
-        <div className="panel-head">
-          <div>
-            <p className="eyebrow">Settings</p>
-            <h2>Change view</h2>
-            <p className="hint">
-              Pick a layout preset and reset widths. Drag-and-drop works here just like the main view.
-            </p>
-          </div>
-        </div>
-        <LayoutDesigner
-          showControls
-          showPresetBar
-          showPreview
-          title="Adjust columns and cards"
-          description="Select a preset, tweak widths, and rearrange widgets. Changes persist locally."
-        />
+      <div className="footer">
+        Second screen develop by Teoman Kerki, 2025. for any questionts contact teoman@teomankerki.com
       </div>
     </div>
-  )
-}
-
-function App() {
-  return (
-    <>
-      <TopBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </>
   )
 }
 

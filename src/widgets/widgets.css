@@ -60,3 +60,111 @@
   margin: 0;
   color: var(--ink-subtle);
 }
+
+.ambient-block {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 140px;
+  background: var(--surface-1);
+}
+
+.ambient-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(111, 223, 194, 0.25), transparent 30%),
+    radial-gradient(circle at 70% 30%, rgba(144, 180, 255, 0.22), transparent 32%),
+    radial-gradient(circle at 40% 70%, rgba(193, 155, 255, 0.18), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.05));
+  animation: ambient-move 18s ease-in-out infinite alternate;
+}
+
+.ambient-gradient.crisp {
+  background: radial-gradient(circle at 22% 22%, rgba(144, 255, 229, 0.45), transparent 22%),
+    radial-gradient(circle at 78% 24%, rgba(120, 175, 255, 0.4), transparent 24%),
+    radial-gradient(circle at 40% 72%, rgba(210, 168, 255, 0.35), transparent 23%),
+    linear-gradient(155deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12));
+  filter: none;
+}
+
+.breath-hint {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  color: var(--ink-subtle);
+  font-size: 0.95rem;
+  background: rgba(5, 8, 16, 0.4);
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+@keyframes ambient-move {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-6px);
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.stat-card {
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.stat-label {
+  color: var(--ink-subtle);
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  color: var(--ink-strong);
+  font-weight: 700;
+}
+
+.game-block {
+  display: grid;
+  gap: 10px;
+}
+
+.game-score {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.game-score .stat-label {
+  text-align: right;
+  flex: 1;
+  padding-right: 8px;
+}
+
+.game-score .stat-value {
+  text-align: left;
+  flex: 0 0 auto;
+  min-width: 40px;
+}
+
+.game-button {
+  width: 100%;
+}
+
+.ghost {
+  background: transparent;
+}

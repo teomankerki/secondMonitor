@@ -9,7 +9,8 @@
 }
 
 .layout-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(140px, 1fr));
   gap: 12px;
   align-items: stretch;
 }
@@ -23,6 +24,10 @@
   flex-direction: column;
   gap: 10px;
   min-width: 0;
+}
+
+.layout-column.full-span {
+  grid-column: 1 / -1;
 }
 
 .column-head {
@@ -93,6 +98,6 @@
 
 @media (max-width: 900px) {
   .layout-grid {
-    flex-direction: column;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }

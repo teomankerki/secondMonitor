@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
-import LayoutPreview, { type LayoutPreset, type LayoutColumn } from './LayoutPreview'
+import LayoutPreview, { type LayoutPreset, type LayoutColumn, type LayoutCard } from './LayoutPreview'
 import './LayoutDesigner.css'
 
 const STORAGE_KEY = 'secondMonitor.layout.v1'
@@ -13,6 +13,7 @@ const defaultPresets: LayoutPreset[] = [
       {
         id: 'rail',
         title: 'Utility rail',
+        layout: 'vertical',
         width: 1,
         cards: [
           { id: 'timer', title: 'Pomodoro', kind: 'timer', size: 'm', accent: '#6fdcc2' },
@@ -23,10 +24,10 @@ const defaultPresets: LayoutPreset[] = [
       {
         id: 'main',
         title: 'Work surface',
+        layout: 'vertical',
         width: 2,
         cards: [
           { id: 'grid', title: 'Card grid', kind: 'grid', size: 'l', accent: '#c49bff' },
-          { id: 'stats', title: 'Status glance', kind: 'stats', size: 'm', accent: '#6fdcc2' },
           { id: 'ambient', title: 'Ambient haze', kind: 'ambient', size: 'm', accent: '#9cd7ff' },
           { id: 'game', title: 'Break: mini runner', kind: 'game', size: 's', accent: '#f17a7a' },
         ],
@@ -41,6 +42,7 @@ const defaultPresets: LayoutPreset[] = [
       {
         id: 'left',
         title: 'Left ambient',
+        layout: 'vertical',
         width: 1,
         cards: [
           { id: 'ambient', title: 'Ambient haze', kind: 'ambient', size: 'l', accent: '#9cd7ff' },
@@ -50,15 +52,17 @@ const defaultPresets: LayoutPreset[] = [
       {
         id: 'right',
         title: 'Right ambient',
+        layout: 'vertical',
         width: 1,
         cards: [
-          { id: 'stats', title: 'Status glance', kind: 'stats', size: 'm', accent: '#6fdcc2' },
+          { id: 'quotes', title: 'Quotes', kind: 'quotes', size: 'm', accent: '#90b4ff' },
           { id: 'grid', title: 'Card grid', kind: 'grid', size: 'l', accent: '#c49bff' },
         ],
       },
       {
         id: 'rail',
         title: 'Widget rail',
+        layout: 'vertical',
         width: 1,
         cards: [
           { id: 'timer', title: 'Pomodoro', kind: 'timer', size: 'm', accent: '#6fdcc2' },
@@ -82,6 +86,22 @@ function clampWidth(width: number) {
   return Math.min(Math.max(width, 1), 3)
 }
 
+const widgetTitles: Partial<Record<LayoutCard['kind'], string>> = {
+  timer: 'Pomodoro',
+  notes: 'Quick notes',
+  quotes: 'Quotes',
+  ambient: 'Ambient haze',
+  game: 'Break: mini tap',
+}
+
+const widgetAccents: Partial<Record<LayoutCard['kind'], string>> = {
+  timer: '#6fdcc2',
+  notes: '#e1c16e',
+  quotes: '#90b4ff',
+  ambient: '#9cd7ff',
+  game: '#f17a7a',
+}
+
 type DesignerColumnProps = {
   column: LayoutColumn
   index: number
@@ -97,12 +117,15 @@ type DesignerColumnProps = {
   onCardDragEnd: () => void
   onColumnDragStart: (columnId: string) => void
   onColumnDragEnd: () => void
+  onOpenSettings: (columnId: string) => void
 }
 
 function DesignerColumn({
   column,
   index,
   showWidthControls,
+  // layoutStyle controls whether cards flow vertically (default), horizontally, or box style
+  // box is removed; only vertical/horizontal remain.
   renderCardContent,
   showDropZone = true,
   onResize,
@@ -114,10 +137,14 @@ function DesignerColumn({
   onCardDragEnd,
   onColumnDragStart,
   onColumnDragEnd,
+  onOpenSettings,
 }: DesignerColumnProps) {
+  const layoutStyle = column.layout || 'vertical'
   return (
     <div
-      className={`designer-column${draggingColumn === column.id ? ' is-dragging' : ''}`}
+      className={`designer-column layout-${layoutStyle}${
+        draggingColumn === column.id ? ' is-dragging' : ''
+      }`}
       draggable
       onDragStart={(event) => {
         onColumnDragStart(column.id)
@@ -147,27 +174,37 @@ function DesignerColumn({
           <p className="eyebrow">Column {index + 1}</p>
           <h4>{column.title}</h4>
         </div>
-        {showWidthControls && (
-          <div className="col-actions">
-            <button
-              type="button"
-              onClick={() => onResize(column.id, -1)}
-              aria-label="Shrink column"
-            >
-              -
-            </button>
-            <span className="width-chip">{column.width}u</span>
-            <button
-              type="button"
-              onClick={() => onResize(column.id, 1)}
-              aria-label="Grow column"
-            >
-              +
-            </button>
-          </div>
-        )}
+        <div className="col-actions">
+          {showWidthControls && (
+            <>
+              <button
+                type="button"
+                onClick={() => onResize(column.id, -1)}
+                aria-label="Shrink column"
+              >
+                -
+              </button>
+              <span className="width-chip">{column.width}u</span>
+              <button
+                type="button"
+                onClick={() => onResize(column.id, 1)}
+                aria-label="Grow column"
+              >
+                +
+              </button>
+            </>
+          )}
+          <button
+            type="button"
+            className="gear-button"
+            aria-label="Open column settings"
+            onClick={() => onOpenSettings(column.id)}
+          >
+            ⚙
+          </button>
+        </div>
       </div>
-      <div className="designer-cards">
+      <div className={`designer-cards layout-${layoutStyle}`}>
         {column.cards.map((card, cardIndex) => (
           <div key={card.id} className="designer-card" style={{ borderColor: card.accent }}>
             <div
@@ -258,6 +295,19 @@ export function LayoutDesigner({
   )
   const [draggingColumn, setDraggingColumn] = useState<string | null>(null)
   const [loadedFromStorage, setLoadedFromStorage] = useState(false)
+  const widgetOptions: { label: string; value: LayoutCard['kind'] }[] = [
+    { label: 'Timer', value: 'timer' },
+    { label: 'Notes', value: 'notes' },
+    { label: 'Quotes', value: 'quotes' },
+    { label: 'Ambient', value: 'ambient' },
+    { label: 'Game', value: 'game' },
+  ]
+  const [settingsColumnId, setSettingsColumnId] = useState<string | null>(null)
+  const [pendingColumnName, setPendingColumnName] = useState('')
+  const [pendingWidgetKind, setPendingWidgetKind] = useState<LayoutCard['kind']>('timer')
+  const [layoutSettingsOpen, setLayoutSettingsOpen] = useState(false)
+  const [newContainerName, setNewContainerName] = useState('')
+  const [newContainerType, setNewContainerType] = useState<LayoutColumn['layout']>('vertical')
 
   const columnTotals = useMemo(
     () => preset.columns.reduce((sum, col) => sum + col.width, 0),
@@ -335,6 +385,92 @@ export function LayoutDesigner({
     setPreset(clonePreset(presetToApply))
   }
 
+  const openSettings = (columnId: string) => {
+    const column = preset.columns.find((c) => c.id === columnId)
+    setSettingsColumnId(columnId)
+    setPendingColumnName(column?.title || '')
+    setPendingWidgetKind(widgetOptions[0].value)
+  }
+
+  const closeSettings = () => {
+    setSettingsColumnId(null)
+  }
+
+  const updateColumnName = () => {
+    if (!settingsColumnId) return
+    const name = pendingColumnName.trim() || 'Column'
+    setPreset((prev) => ({
+      ...prev,
+      columns: prev.columns.map((col) =>
+        col.id === settingsColumnId ? { ...col, title: name } : col,
+      ),
+    }))
+  }
+
+  const addWidgetToColumn = () => {
+    if (!settingsColumnId) return
+    const kind = pendingWidgetKind
+    const id = `${kind}-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+    setPreset((prev) => ({
+      ...prev,
+      columns: prev.columns.map((col) =>
+        col.id === settingsColumnId
+          ? {
+              ...col,
+              cards: [
+                ...col.cards,
+                {
+                  id,
+                  title: widgetTitles[kind] || 'Widget',
+                  kind,
+                  size: 'm',
+                  accent: widgetAccents[kind] || '#6fdcc2',
+                },
+              ],
+            }
+          : col,
+      ),
+    }))
+  }
+
+  const removeCard = (columnId: string, cardId: string) => {
+    setPreset((prev) => ({
+      ...prev,
+      columns: prev.columns.map((col) =>
+        col.id === columnId ? { ...col, cards: col.cards.filter((c) => c.id !== cardId) } : col,
+      ),
+    }))
+  }
+
+  const addContainer = () => {
+    const name = newContainerName.trim() || 'New container'
+    const id = `col-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+    const layout: LayoutColumn['layout'] = newContainerType || 'vertical'
+    const width = layout === 'horizontal' ? 3 : 1
+    setPreset((prev) => ({
+      ...prev,
+      columns: [
+        ...prev.columns,
+        {
+          id,
+          title: name,
+          layout,
+          width,
+          cards: [],
+        },
+      ],
+    }))
+    setNewContainerName('')
+    setNewContainerType('vertical')
+  }
+
+  const removeContainer = (columnId: string) => {
+    setPreset((prev) => ({
+      ...prev,
+      columns: prev.columns.filter((c) => c.id !== columnId),
+    }))
+  }
+
   return (
     <div className="layout-designer">
       {showControls && (
@@ -391,6 +527,7 @@ export function LayoutDesigner({
             renderCardContent={renderCardContent}
             showDropZone={showDropZone}
             onResize={resizeColumn}
+            onOpenSettings={openSettings}
             onDropCard={(sourceCol, cardId, targetCol, targetIndex) => {
               setDraggingCard(null)
               moveCardToColumn(sourceCol, cardId, targetCol, targetIndex)
@@ -423,8 +560,171 @@ export function LayoutDesigner({
           <LayoutPreview preset={preset} />
         </div>
       )}
+
+      <div className="layout-settings-trigger">
+        <button type="button" className="widget-button" onClick={() => setLayoutSettingsOpen(true)}>
+          Layout settings
+        </button>
+      </div>
+
+      {settingsColumnId && (
+        <div className="modal-backdrop" onClick={closeSettings}>
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Column settings"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {(() => {
+              const col = preset.columns.find((c) => c.id === settingsColumnId)
+              if (!col) return null
+              return (
+                <>
+                  <div className="modal-head">
+                    <div>
+                      <p className="eyebrow">Column settings</p>
+                      <h3>{col.title}</h3>
+                    </div>
+                    <button type="button" className="ghost-button" onClick={closeSettings}>
+                      Close
+                    </button>
+                  </div>
+                  <div className="modal-section">
+                    <label className="preset-label" htmlFor="column-name">
+                      Column name
+                    </label>
+                    <input
+                      id="column-name"
+                      className="text-input"
+                      value={pendingColumnName}
+                      onChange={(e) => setPendingColumnName(e.target.value)}
+                      placeholder="Column name"
+                    />
+                    <button type="button" className="widget-button" onClick={updateColumnName}>
+                      Save name
+                    </button>
+                  </div>
+                  <div className="modal-section">
+                    <label className="preset-label" htmlFor="widget-kind">
+                      Add widget
+                    </label>
+                    <div className="add-row">
+                      <select
+                        id="widget-kind"
+                        value={pendingWidgetKind}
+                        onChange={(e) => setPendingWidgetKind(e.target.value as LayoutCard['kind'])}
+                      >
+                        {widgetOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                      <button type="button" className="widget-button" onClick={addWidgetToColumn}>
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  <div className="modal-section">
+                    <p className="preset-label">Widgets in this column</p>
+                    <ul className="widget-list">
+                      {col.cards.map((card) => (
+                        <li key={card.id}>
+                          <span>{card.title}</span>
+                          <button
+                            type="button"
+                            className="ghost-button"
+                            onClick={() => removeCard(col.id, card.id)}
+                          >
+                            Remove
+                          </button>
+                        </li>
+                      ))}
+                      {col.cards.length === 0 && <li className="hint">No widgets yet.</li>}
+                    </ul>
+                    <p className="hint">Widget sizes are fixed; use drag-and-drop to reposition.</p>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+        </div>
+      )}
+
+      {layoutSettingsOpen && (
+        <div className="modal-backdrop" onClick={() => setLayoutSettingsOpen(false)}>
+          <div
+            className="modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Layout settings"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-head">
+              <div>
+                <p className="eyebrow">Layout settings</p>
+                <h3>Containers</h3>
+              </div>
+              <button
+                type="button"
+                className="ghost-button"
+                onClick={() => setLayoutSettingsOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="modal-section">
+              <label className="preset-label" htmlFor="new-container-name">
+                Add container
+              </label>
+              <input
+                id="new-container-name"
+                className="text-input"
+                value={newContainerName}
+                onChange={(e) => setNewContainerName(e.target.value)}
+                placeholder="Container name"
+              />
+              <div className="add-row">
+                <select
+                  value={newContainerType}
+                  onChange={(e) => setNewContainerType(e.target.value as LayoutColumn['layout'])}
+                >
+                  <option value="vertical">Vertical</option>
+                  <option value="horizontal">Horizontal</option>
+                </select>
+                <button type="button" className="widget-button" onClick={addContainer}>
+                  Add
+                </button>
+              </div>
+            </div>
+
+            <div className="modal-section">
+              <p className="preset-label">Existing containers</p>
+              <ul className="widget-list">
+                {preset.columns.map((col) => (
+                  <li key={col.id}>
+                    <span>
+                      {col.title} — {col.layout || 'vertical'}
+                    </span>
+                    <button
+                      type="button"
+                      className="ghost-button"
+                      onClick={() => removeContainer(col.id)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
 
 export default LayoutDesigner
+

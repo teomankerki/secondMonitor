@@ -11,6 +11,7 @@ export type LayoutCard = {
 export type LayoutColumn = {
   id: string
   title: string
+  layout?: 'vertical' | 'horizontal'
   width: number
   cards: LayoutCard[]
 }
@@ -48,12 +49,12 @@ export function LayoutPreview({ preset }: LayoutPreviewProps) {
         {preset.columns.map((column) => (
           <div
             key={column.id}
-            className="layout-column"
-            style={{ flex: column.width }}
+            className={`layout-column${column.layout === 'horizontal' ? ' full-span' : ''}`}
+            style={{ flex: column.layout === 'horizontal' ? 1 : column.width }}
           >
             <div className="column-head">
               <span>{column.title}</span>
-              <span className="column-width">{column.width}u</span>
+              <span className="column-width">{column.layout === 'horizontal' ? 'row' : `${column.width}u`}</span>
             </div>
             <div className="column-body">
               {column.cards.map((card) => (
